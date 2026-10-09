@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "GPT Ad Slot Placeholder",
+  "version": "1.2.0",
+  "description": "div-gpt-ad-* が広告に置換される前にモック表示を出して、開発時に枠を見落とさないようにする拡張機能",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": false,
+      "js": ["content.js"]
+    },
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": false,
+      "world": "MAIN",
+      "js": ["page-hook.js"]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>テンプレURL — study-sence-deduce</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 24px; max-width: 1000px; font-size: 13px; }
+  h1 { font-size: 18px; margin: 0 0 16px; }
+  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+  .toolbar input[type="search"] { flex: 1; padding: 6px 8px; font: inherit; }
+  button { font: inherit; padding: 4px 10px; cursor: pointer; }
+  button.primary { background: #06c; color: #fff; border: 1px solid #06c; border-radius: 4px; }
+  button.danger { color: #b00; }
+  .item { border: 1px solid #ddd; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; }
+  .item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .item-head .label { font-weight: 600; flex: 1; }
+  .item .path { font-family: ui-monospace, Menlo, monospace; color: #444; font-size: 12px; word-break: break-all; margin-bottom: 4px; }
+  .item .meta { color: #666; font-size: 12px; margin-bottom: 6px; }
+  .tag { display: inline-block; background: #eef; color: #339; border-radius: 3px; padding: 1px 6px; font-size: 11px; margin-right: 4px; }
+  .env-btns { display: flex; flex-wrap: wrap; gap: 4px; }
+  button.env-btn { display: flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid #ddd; background: #fff; border-radius: 3px; font-size: 12px; }
+  button.env-btn .swatch { width: 10px; height: 10px; border-radius: 2px; }
+  .empty { color: #888; padding: 24px 0; text-align: center; }
+  dialog { border: 1px solid #ccc; border-radius: 8px; padding: 16px; min-width: 480px; }
+  dialog form { display: flex; flex-direction: column; gap: 8px; }
+  dialog label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #555; }
+  dialog input, dialog textarea, dialog select { font: inherit; padding: 4px 6px; }
+  dialog .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  dialog.host-slot-dialog { min-width: 0; width: 320px; padding: 12px; font-size: 13px; }
+  dialog.host-slot-dialog::backdrop { background: rgba(0,0,0,0.2); }
+  .host-slot-dialog .hs-title { font-weight: 600; margin-bottom: 4px; }
+  .host-slot-dialog .hs-template { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #666; margin-bottom: 8px; word-break: break-all; }
+  .host-slot-dialog .hs-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 240px; overflow-y: auto; }
+  .host-slot-dialog .hs-row { display: flex; gap: 4px; }
+  .host-slot-dialog .hs-open { flex: 1; text-align: left; padding: 4px 8px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; font: inherit; }
+  .host-slot-dialog .hs-open:hover { background: #f5f5f5; }
+  .host-slot-dialog .hs-del { width: 28px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; color: #b00; }
+  .host-slot-dialog .hs-empty { color: #888; font-size: 12px; }
+  .host-slot-dialog .hs-input-row { display: flex; gap: 4px; margin-bottom: 8px; }
+  .host-slot-dialog .hs-input { flex: 1; padding: 4px 6px; font: inherit; border: 1px solid #ccc; border-radius: 4px; }
+  .host-slot-dialog .hs-submit { padding: 4px 10px; font: inherit; cursor: pointer; }
+  .host-slot-dialog .hs-actions { display: flex; justify-content: flex-end; }
+  .host-slot-dialog .hs-cancel { padding: 4px 10px; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h1>テンプレURL</h1>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="ラベル・メモ・タグで検索" />
+    <button id="add-from-current" class="primary">現在のタブから追加</button>
+    <button id="add-manual">手動で追加</button>
+  </div>
+  <div id="list"></div>
+
+  <dialog id="editor">
+    <form id="editor-form">
+      <label>セット
+        <select id="f-set"></select>
+      </label>
+      <label>ラベル
+        <input id="f-label" type="text" required />
+      </label>
+      <label>パス + クエリ + ハッシュ
+        <input id="f-path" type="text" placeholder="/foo/bar?x=1#h" required />
+      </label>
+      <label>タグ（カンマ区切り）
+        <input id="f-tags" type="text" />
+      </label>
+      <label>メモ
+        <textarea id="f-memo" rows="3"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" id="f-cancel">キャンセル</button>
+        <button type="submit" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="/src/templates.ts"></script>
+</body>
+</html>

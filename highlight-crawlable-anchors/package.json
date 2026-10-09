@@ -1,0 +1,14 @@
+{
+  "name": "highlight-crawlable-anchors",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.320",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.2"
+  }
+}

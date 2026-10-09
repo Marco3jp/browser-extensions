@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crawlable Anchor Highlighter</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        width: 300px;
+        padding: 16px;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+
+      .header {
+        margin-bottom: 14px;
+      }
+
+      .header h1 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #94a3b8;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .legend {
+        background: #1e293b;
+        border-radius: 8px;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-bottom: 14px;
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+
+      .dot.green {
+        background: #22c55e;
+      }
+
+      .dot.red {
+        background: #ef4444;
+      }
+
+      .legend-desc {
+        color: #cbd5e1;
+      }
+
+      .legend-sub {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 1px;
+      }
+
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: #64748b;
+      }
+
+      #status {
+        font-weight: 700;
+        color: #64748b;
+      }
+
+      #status[data-active="true"] {
+        color: #22c55e;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: #3b82f6;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      button:hover {
+        background: #2563eb;
+      }
+
+      button[data-active="true"] {
+        background: #475569;
+      }
+
+      button[data-active="true"]:hover {
+        background: #334155;
+      }
+
+      .page-index-section {
+        margin-bottom: 14px;
+      }
+
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      #page-status {
+        background: #1e293b;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 12px;
+        border-left: 3px solid #334155;
+        transition: border-color 0.2s;
+      }
+
+      #page-status[data-state="indexable"] {
+        border-color: #22c55e;
+      }
+
+      #page-status[data-state="noindex"] {
+        border-color: #ef4444;
+      }
+
+      #page-status[data-state="error"] {
+        border-color: #f59e0b;
+      }
+
+      .page-status-body {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #cbd5e1;
+      }
+
+      .page-status-icon {
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .page-status-label {
+        font-weight: 600;
+      }
+
+      .page-status-reasons {
+        list-style: none;
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .page-status-reasons li {
+        color: #94a3b8;
+        font-size: 11px;
+        padding-left: 14px;
+        position: relative;
+      }
+
+      .page-status-reasons li::before {
+        content: "・";
+        position: absolute;
+        left: 0;
+      }
+
+      .page-status-loading {
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      #page-status:not([data-state]) .page-status-body,
+      #page-status[data-state="loading"] .page-status-body {
+        display: none;
+      }
+
+      #page-status[data-state="loading"] .page-status-loading {
+        display: block;
+      }
+
+      #page-status:not([data-state="loading"]) .page-status-loading {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Crawlable Anchor Highlighter</h1>
+    </div>
+
+    <div class="page-index-section">
+      <div class="section-label">現在のページ</div>
+      <div id="page-status">
+        <div class="page-status-loading">読み込み中...</div>
+        <div class="page-status-body">
+          <span class="page-status-icon"></span>
+          <span class="page-status-label"></span>
+        </div>
+        <ul class="page-status-reasons"></ul>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="dot green"></div>
+        <div>
+          <div class="legend-desc">クロール可能なリンク</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="dot red"></div>
+        <div>
+          <div class="legend-desc">クロール不可なリンク</div>
+          <div class="legend-sub">nofollow / ugc / sponsored / meta robots / robots.txt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <span>状態</span>
+      <span id="status">OFF</span>
+    </div>
+
+    <button id="toggle">ハイライト表示</button>
+
+    <script type="module" src="/src/popup.ts"></script>
+  </body>
+</html>

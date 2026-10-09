@@ -1,0 +1,43 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build and zip
+        run: |
+          mkdir -p out
+          for manifest in */manifest.json */public/manifest.json; do
+            [ -f "$manifest" ] || continue
+            dir="${manifest%%/*}"
+            if [ -f "$dir/package.json" ]; then
+              (cd "$dir" && npm ci && npm run build)
+              src="$dir/dist"
+            else
+              src="$dir"
+            fi
+            (cd "$src" && zip -r "$GITHUB_WORKSPACE/out/$dir.zip" . -x 'README.md')
+          done
+          ls -l out
+
+      - name: Publish latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest out/*.zip --title latest --notes "main の ${GITHUB_SHA::7} からビルド" --latest

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>GitHub Tab Prefix 設定</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 16px; min-width: 360px; }
+  textarea { width: 100%; height: 120px; font-family: ui-monospace, monospace; box-sizing: border-box; }
+  .help { color: #666; font-size: 12px; margin: 4px 0 8px; }
+  #status { margin-left: 8px; color: #1a7f37; }
+</style>
+</head>
+<body>
+  <label for="prefixes">リポジトリ名から落とす接頭辞（1行に1つ）</label>
+  <p class="help">例: <code>acme-service-</code> と書くと、<code>acme-service-billing</code> はタブに <code>billing</code> と出ます。</p>
+  <textarea id="prefixes" spellcheck="false"></textarea>
+  <div>
+    <button id="save">保存</button><span id="status"></span>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

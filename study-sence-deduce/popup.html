@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>study-sence-deduce</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 12px; width: 320px; font-size: 13px; }
+  h1 { font-size: 12px; color: #666; font-weight: 500; margin: 0 0 4px; }
+  .current { font-size: 12px; margin-bottom: 10px; color: #333; }
+  .current .env-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; color: #fff; font-weight: 700; margin-right: 4px; }
+  .switch-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  button.env-btn { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; text-align: left; font: inherit; }
+  button.env-btn:hover { background: #f5f5f5; }
+  button.env-btn .swatch { width: 12px; height: 12px; border-radius: 2px; }
+  .links { display: flex; gap: 12px; border-top: 1px solid #eee; padding-top: 8px; font-size: 12px; }
+  .links a { color: #06c; text-decoration: none; cursor: pointer; }
+  .links a:hover { text-decoration: underline; }
+  .empty { color: #888; font-size: 12px; padding: 8px 0; }
+  dialog.host-slot-dialog { border: 1px solid #ccc; border-radius: 6px; padding: 12px; width: 260px; font-size: 13px; }
+  dialog.host-slot-dialog::backdrop { background: rgba(0,0,0,0.2); }
+  .host-slot-dialog .hs-title { font-weight: 600; margin-bottom: 4px; }
+  .host-slot-dialog .hs-template { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #666; margin-bottom: 8px; word-break: break-all; }
+  .host-slot-dialog .hs-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 200px; overflow-y: auto; }
+  .host-slot-dialog .hs-row { display: flex; gap: 4px; }
+  .host-slot-dialog .hs-open { flex: 1; text-align: left; padding: 4px 8px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; font: inherit; }
+  .host-slot-dialog .hs-open:hover { background: #f5f5f5; }
+  .host-slot-dialog .hs-del { width: 24px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; color: #b00; }
+  .host-slot-dialog .hs-empty { color: #888; font-size: 12px; }
+  .host-slot-dialog .hs-input-row { display: flex; gap: 4px; margin-bottom: 8px; }
+  .host-slot-dialog .hs-input { flex: 1; padding: 4px 6px; font: inherit; border: 1px solid #ccc; border-radius: 4px; }
+  .host-slot-dialog .hs-submit { padding: 4px 10px; font: inherit; cursor: pointer; }
+  .host-slot-dialog .hs-actions { display: flex; justify-content: flex-end; }
+  .host-slot-dialog .hs-cancel { padding: 4px 10px; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h1>環境スイッチャー</h1>
+  <div id="current" class="current">読み込み中…</div>
+  <div id="switch-list" class="switch-list"></div>
+  <div class="links">
+    <a id="open-templates">テンプレURL</a>
+    <a id="open-options">設定</a>
+  </div>
+  <script type="module" src="/src/popup.ts"></script>
+</body>
+</html>
