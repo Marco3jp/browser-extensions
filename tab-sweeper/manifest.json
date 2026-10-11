@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Sweeper",
+  "description": "重複したタブや、URL・タイトルで絞り込んだタブをまとめて閉じる",
+  "version": "1.0.0",
+  "permissions": ["tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

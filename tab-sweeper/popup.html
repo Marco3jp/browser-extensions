@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tab Sweeper</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      font-size: 13px;
+      width: 420px;
+      margin: 0;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #ddd;
+    }
+    .tab-bar button {
+      flex: 1;
+      padding: 8px 0;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
+    }
+    .tab-bar button.active {
+      color: #4a90e2;
+      border-bottom-color: #4a90e2;
+      font-weight: bold;
+    }
+
+    .tab-content { display: none; padding: 12px; }
+    .tab-content.active { display: block; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .summary { font-weight: bold; }
+    .danger-btn {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: #dc3232;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .danger-btn:hover { background: #b82828; }
+    .danger-btn:disabled { background: #ccc; cursor: default; }
+
+    .empty { color: #999; font-size: 12px; }
+
+    .scroll { list-style: none; padding: 0; margin: 0; max-height: 440px; overflow-y: auto; }
+
+    /* Duplicates tab */
+    .group {
+      background: #f7f7f7;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .group-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .group-url {
+      flex: 1;
+      min-width: 0;
+      font-family: monospace;
+      font-size: 11px;
+      color: #444;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .close-group-btn {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: none;
+      border: 1px solid #c00;
+      color: #c00;
+      border-radius: 3px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .close-group-btn:hover { background: #fff0f0; }
+
+    /* Tab rows (both tabs) */
+    .tab-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 0;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .tab-row input { margin: 0; flex-shrink: 0; }
+    .tab-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .tab-title, .tab-url {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tab-url { font-family: monospace; font-size: 10px; color: #888; }
+    .tab-row.closing .tab-title { color: #999; text-decoration: line-through; }
+    .tab-meta { color: #888; font-size: 11px; flex-shrink: 0; }
+
+    /* Search tab */
+    .search-form { display: flex; gap: 4px; margin-bottom: 8px; }
+    #query {
+      flex: 1;
+      min-width: 0;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    #field {
+      padding: 3px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    .search-options { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; color: #444; }
+    .search-options label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    #regex-error { color: #c00; font-size: 12px; margin-bottom: 8px; }
+    .select-all { font-size: 12px; color: #444; margin-bottom: 4px; }
+    #matches .tab-row { padding: 4px 0; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div class="tab-bar">
+    <button class="active" data-tab="dup">重複</button>
+    <button data-tab="search">検索</button>
+  </div>
+
+  <!-- Duplicates tab -->
+  <div id="tab-dup" class="tab-content active">
+    <div class="header">
+      <span id="dup-summary" class="summary">確認中...</span>
+      <button id="close-all-dup-btn" class="danger-btn" disabled>すべて閉じる</button>
+    </div>
+    <div id="dup-empty" class="empty" style="display:none">重複しているタブはありません</div>
+    <ul id="groups" class="scroll"></ul>
+  </div>
+
+  <!-- Search tab -->
+  <div id="tab-search" class="tab-content">
+    <div class="search-form">
+      <input id="query" type="text" placeholder="例: localhost:3000, Pull Request" />
+      <select id="field">
+        <option value="both">URL・タイトル</option>
+        <option value="url">URL</option>
+        <option value="title">タイトル</option>
+      </select>
+    </div>
+    <div class="search-options">
+      <label><input id="regex" type="checkbox" />正規表現</label>
+      <label><input id="skip-pinned" type="checkbox" checked />ピン留めを除く</label>
+    </div>
+    <div id="regex-error" style="display:none"></div>
+    <div class="header">
+      <span id="search-summary" class="summary"></span>
+      <button id="close-matches-btn" class="danger-btn" disabled>選択したタブを閉じる</button>
+    </div>
+    <label class="select-all" id="select-all-row" style="display:none">
+      <input id="select-all" type="checkbox" checked /> すべて選択
+    </label>
+    <ul id="matches" class="scroll"></ul>
+  </div>
+
+  <script src="dedupe.js"></script>
+  <script src="match.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
