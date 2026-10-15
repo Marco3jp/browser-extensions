@@ -8,6 +8,7 @@
 | [github-tab-prefix](github-tab-prefix/) | GitHub のタブタイトルの先頭にリポジトリ名を付ける | 不要 |
 | [gpt-ad-placeholder](gpt-ad-placeholder/) | GPT の広告枠を、広告が出るまで色付きのモックで見えるようにする | 不要 |
 | [highlight-crawlable-anchors](highlight-crawlable-anchors/) | ページ内のリンクをクロールされるかどうかで色分けする | 要 |
+| [nicoverlay](nicoverlay/) | dアニメストアの再生画面にニコニコ動画のコメントを重ねる（ローカルのバックエンドが要る） | 要 |
 | [study-sence-deduce](study-sence-deduce/) | dev / stg / prod の環境リボン、環境の切り替え、URL のテンプレ保存 | 要 |
 | [tab-sweeper](tab-sweeper/) | 重複したタブや、URL・タイトルで絞り込んだタブをまとめて閉じる | 不要 |
 
