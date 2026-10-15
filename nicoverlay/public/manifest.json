@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "nicoverlay",
+  "version": "0.1.0",
+  "description": "dアニメストアの再生画面にニコニコ動画のコメントを重ねて表示する",
+  "permissions": ["storage", "cookies"],
+  "host_permissions": ["http://localhost/*", "http://127.0.0.1/*"],
+  "optional_host_permissions": ["https://*.nicovideo.jp/*", "http://*/*", "https://*/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://animestore.docomo.ne.jp/animestore/sc_d_pc*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html"
+}
